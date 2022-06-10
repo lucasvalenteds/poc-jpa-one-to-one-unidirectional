@@ -4,4 +4,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = "poc-jpa-template"
+rootProject.name = "poc-jpa-one-to-one-unidirectional"

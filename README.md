@@ -1,4 +1,4 @@
-# POC: JPA {title}
+# POC: JPA One-to-One Unidirectional
 
 It demonstrates how to use JPA to implement {use_case}.
 
