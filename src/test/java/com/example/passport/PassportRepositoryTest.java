@@ -1,4 +1,4 @@
-package com.example.document;
+package com.example.passport;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

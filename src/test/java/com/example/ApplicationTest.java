@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.document.Passport;
-import com.example.document.PassportRepository;
+import com.example.passport.Passport;
+import com.example.passport.PassportRepository;
 import com.example.person.Person;
 import com.example.person.PersonRepository;
 import org.junit.jupiter.api.MethodOrderer;

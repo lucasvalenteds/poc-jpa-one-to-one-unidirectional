@@ -1,6 +1,6 @@
 package com.example.person;
 
-import com.example.document.Passport;
+import com.example.passport.Passport;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

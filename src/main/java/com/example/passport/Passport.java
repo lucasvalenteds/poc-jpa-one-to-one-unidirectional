@@ -1,4 +1,4 @@
-package com.example.document;
+package com.example.passport;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
