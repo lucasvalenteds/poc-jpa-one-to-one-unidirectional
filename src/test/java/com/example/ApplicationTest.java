@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -120,11 +121,12 @@ class ApplicationTest {
                 .orElseThrow();
         var passport = personWithPassport.getPassport();
         personWithPassport.setPassport(null);
-        var personWithoutPassword = personRepository.save(personWithPassport);
+        var personWithoutPassport = personRepository.save(personWithPassport);
 
         passportRepository.deleteById(passport.getId());
 
         assertFalse(passportRepository.existsById(passport.getId()));
+        assertNull(personWithoutPassport.getPassport());
     }
 
     @Test
