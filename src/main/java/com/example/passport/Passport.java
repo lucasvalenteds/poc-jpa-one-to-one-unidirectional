@@ -24,9 +24,9 @@ public class Passport {
     @Column(name = "PASSPORT_ID")
     private Long id;
 
-    @Column(name = "CODE")
+    @Column(name = "PASSPORT_CODE")
     private String code;
 
-    @Column(name = "EXPIRES_AT")
+    @Column(name = "PASSPORT_EXPIRES_AT")
     private Instant expiresAt;
 }
