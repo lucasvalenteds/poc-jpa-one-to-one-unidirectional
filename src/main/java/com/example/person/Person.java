@@ -1,6 +1,6 @@
 package com.example.person;
 
-import com.example.passport.Passport;
+import com.example.document.Document;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -29,6 +29,6 @@ public class Person {
     private String name;
 
     @OneToOne
-    @JoinColumn(name = "PASSPORT_ID")
-    private Passport passport;
+    @JoinColumn(name = "DOCUMENT_ID")
+    private Document document;
 }

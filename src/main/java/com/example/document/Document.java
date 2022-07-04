@@ -1,4 +1,4 @@
-package com.example.passport;
+package com.example.document;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,20 +13,20 @@ import lombok.NoArgsConstructor;
 import java.time.Instant;
 
 @Entity
-@Table(name = "PASSPORT")
+@Table(name = "DOCUMENT")
 @Data
 @NoArgsConstructor
-public class Passport {
+public class Document {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PASSPORT_ID_SEQUENCE_GENERATOR")
-    @SequenceGenerator(name = "PASSPORT_ID_SEQUENCE_GENERATOR", sequenceName = "PASSPORT_ID_SEQUENCE", allocationSize = 1)
-    @Column(name = "PASSPORT_ID")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "DOCUMENT_ID_SEQUENCE_GENERATOR")
+    @SequenceGenerator(name = "DOCUMENT_ID_SEQUENCE_GENERATOR", sequenceName = "DOCUMENT_ID_SEQUENCE", allocationSize = 1)
+    @Column(name = "DOCUMENT_ID")
     private Long id;
 
-    @Column(name = "PASSPORT_CODE")
+    @Column(name = "DOCUMENT_CODE")
     private String code;
 
-    @Column(name = "PASSPORT_EXPIRES_AT")
+    @Column(name = "DOCUMENT_EXPIRES_AT")
     private Instant expiresAt;
 }

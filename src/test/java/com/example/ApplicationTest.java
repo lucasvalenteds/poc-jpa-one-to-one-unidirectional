@@ -1,7 +1,7 @@
 package com.example;
 
-import com.example.passport.Passport;
-import com.example.passport.PassportRepository;
+import com.example.document.Document;
+import com.example.document.DocumentRepository;
 import com.example.person.Person;
 import com.example.person.PersonRepository;
 import org.junit.jupiter.api.MethodOrderer;
@@ -46,124 +46,124 @@ class ApplicationTest {
     }
 
     @Autowired
-    private PassportRepository passportRepository;
+    private DocumentRepository documentRepository;
 
     @Autowired
     private PersonRepository personRepository;
 
     @Test
     @Order(1)
-    void assigningPassportToPerson() {
-        var passport = new Passport();
-        passport.setCode("US89234");
-        passport.setExpiresAt(Instant.now().plus(Duration.ofDays(10 * 365)));
-        passportRepository.save(passport);
+    void assigningDocumentToPerson() {
+        var document = new Document();
+        document.setCode("US89234");
+        document.setExpiresAt(Instant.now().plus(Duration.ofDays(10 * 365)));
+        documentRepository.save(document);
 
         var person = new Person();
         person.setName("Mary Jane");
-        person.setPassport(passport);
+        person.setDocument(document);
         personRepository.save(person);
 
-        assertEquals(1L, passport.getId());
+        assertEquals(1L, document.getId());
         assertEquals(1L, person.getId());
-        assertEquals(passport, person.getPassport());
-        assertTrue(passportRepository.existsById(passport.getId()));
+        assertEquals(document, person.getDocument());
+        assertTrue(documentRepository.existsById(document.getId()));
         assertTrue(personRepository.existsById(person.getId()));
     }
 
     @Test
     @Order(2)
-    void renewingPassportAssignedToPerson() {
-        var passportBeforeRenewal = passportRepository.findById(1L)
+    void renewingDocumentAssignedToPerson() {
+        var documentBeforeRenewal = documentRepository.findById(1L)
                 .orElseThrow();
-        var expirationBeforeRenewal = passportBeforeRenewal.getExpiresAt();
-        passportBeforeRenewal.setExpiresAt(expirationBeforeRenewal.plus(Duration.ofDays(365 * 10)));
+        var expirationBeforeRenewal = documentBeforeRenewal.getExpiresAt();
+        documentBeforeRenewal.setExpiresAt(expirationBeforeRenewal.plus(Duration.ofDays(365 * 10)));
 
-        var passportRenewed = passportRepository.save(passportBeforeRenewal);
+        var documentRenewed = documentRepository.save(documentBeforeRenewal);
 
-        assertEquals(passportBeforeRenewal.getId(), passportRenewed.getId());
-        assertEquals(passportBeforeRenewal.getCode(), passportRenewed.getCode());
-        assertNotEquals(expirationBeforeRenewal, passportRenewed.getExpiresAt());
+        assertEquals(documentBeforeRenewal.getId(), documentRenewed.getId());
+        assertEquals(documentBeforeRenewal.getCode(), documentRenewed.getCode());
+        assertNotEquals(expirationBeforeRenewal, documentRenewed.getExpiresAt());
         var person = personRepository.findById(1L)
                 .orElseThrow();
-        assertEquals(person.getPassport(), passportRenewed);
+        assertEquals(person.getDocument(), documentRenewed);
     }
 
     @Test
     @Order(3)
-    void passportAssignedToPersonCannotBeDeleted() {
-        var passport = passportRepository.findById(1L)
+    void documentAssignedToPersonCannotBeDeleted() {
+        var document = documentRepository.findById(1L)
                 .orElseThrow();
 
         var exception = assertThrows(
                 DataIntegrityViolationException.class,
-                () -> passportRepository.delete(passport)
+                () -> documentRepository.delete(document)
         );
 
-        assertTrue(passportRepository.existsById(passport.getId()));
+        assertTrue(documentRepository.existsById(document.getId()));
         var person = personRepository.findById(1L)
                 .orElseThrow();
-        assertEquals(passport, person.getPassport());
+        assertEquals(document, person.getDocument());
 
         assertThat(exception)
                 .getRootCause()
                 .hasMessageContainingAll(
-                        "ERROR: update or delete on table \"passport\" violates foreign key constraint \"person_passport_id_fkey\" on table \"person\"",
-                        "Detail: Key (passport_id)=(1) is still referenced from table \"person\"."
+                        "ERROR: update or delete on table \"document\" violates foreign key constraint \"person_document_id_fkey\" on table \"person\"",
+                        "Detail: Key (document_id)=(1) is still referenced from table \"person\"."
                 );
     }
 
     @Test
     @Order(4)
-    void revokingPassportAndDeletingIt() {
-        var personWithPassport = personRepository.findById(1L)
+    void revokingDocumentAndDeletingIt() {
+        var personWithDocument = personRepository.findById(1L)
                 .orElseThrow();
-        var passport = personWithPassport.getPassport();
-        personWithPassport.setPassport(null);
-        var personWithoutPassport = personRepository.save(personWithPassport);
+        var document = personWithDocument.getDocument();
+        personWithDocument.setDocument(null);
+        var personWithoutDocument = personRepository.save(personWithDocument);
 
-        passportRepository.deleteById(passport.getId());
+        documentRepository.deleteById(document.getId());
 
-        assertFalse(passportRepository.existsById(passport.getId()));
-        assertNull(personWithoutPassport.getPassport());
+        assertFalse(documentRepository.existsById(document.getId()));
+        assertNull(personWithoutDocument.getDocument());
     }
 
     @Test
     @Order(5)
-    void deletingPersonDoesNotDeletePassport() {
-        var passport = new Passport();
-        passport.setCode("XD892342");
-        passport.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
-        var passportCreated = passportRepository.save(passport);
+    void deletingPersonDoesNotDeleteDocument() {
+        var document = new Document();
+        document.setCode("XD892342");
+        document.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
+        var documentCreated = documentRepository.save(document);
         var person = personRepository.findById(1L)
                 .orElseThrow();
-        person.setPassport(passportCreated);
+        person.setDocument(documentCreated);
 
         var personCreated = personRepository.save(person);
         personRepository.delete(personCreated);
 
         assertFalse(personRepository.existsById(personCreated.getId()));
-        assertTrue(passportRepository.existsById(person.getPassport().getId()));
+        assertTrue(documentRepository.existsById(person.getDocument().getId()));
     }
 
     @Test
     @Order(6)
-    void twoPeopleCannotHaveTheSamePassport() {
-        // Creating the passport and assigning it to John
-        final var passport = new Passport();
-        passport.setCode("XYZ123456");
-        passport.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
-        passportRepository.save(passport);
+    void twoPeopleCannotHaveTheSameDocument() {
+        // Creating the document and assigning it to John
+        final var document = new Document();
+        document.setCode("XYZ123456");
+        document.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
+        documentRepository.save(document);
 
         final var person1 = new Person();
         person1.setName("John Smith");
-        person1.setPassport(passport);
+        person1.setDocument(document);
         personRepository.save(person1);
 
-        // Trying to assign the same passport to Mary
+        // Trying to assign the same document to Mary
         final var person2 = new Person();
         person2.setName("Mary Jane");
-        person2.setPassport(passport);
+        person2.setDocument(document);
 
         // Asserting the second assignment does not work
         final var exception = assertThrows(
@@ -174,8 +174,8 @@ class ApplicationTest {
         assertThat(exception)
                 .getRootCause()
                 .hasMessageContainingAll(
-                        "ERROR: duplicate key value violates unique constraint \"person_passport_id_key\"",
-                        "Detail: Key (passport_id)=(3) already exists."
+                        "ERROR: duplicate key value violates unique constraint \"person_document_id_key\"",
+                        "Detail: Key (document_id)=(3) already exists."
                 );
     }
 }

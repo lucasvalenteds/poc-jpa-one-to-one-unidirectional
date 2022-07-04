@@ -1,4 +1,4 @@
-package com.example.passport;
+package com.example.document;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @SpringBootTest
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class PassportRepositoryTest {
+class DocumentRepositoryTest {
 
     @Container
     private static final PostgreSQLContainer<?> CONTAINER =
@@ -37,48 +37,48 @@ class PassportRepositoryTest {
     }
 
     @Autowired
-    private PassportRepository passportRepository;
+    private DocumentRepository documentRepository;
 
     @Test
     @Order(1)
-    void creatingPassport() {
-        var passport = new Passport();
-        passport.setCode("AB125634");
-        passport.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
+    void creatingDocument() {
+        var document = new Document();
+        document.setCode("AB125634");
+        document.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
 
-        var passportCreated = passportRepository.save(passport);
+        var documentCreated = documentRepository.save(document);
 
-        assertEquals(1L, passport.getId(), "Passport instance gets flushed after save");
-        assertEquals(1L, passportCreated.getId());
-        assertEquals(passport.getCode(), passportCreated.getCode());
-        assertEquals(passport.getExpiresAt(), passportCreated.getExpiresAt());
+        assertEquals(1L, document.getId(), "Document instance gets flushed after save");
+        assertEquals(1L, documentCreated.getId());
+        assertEquals(document.getCode(), documentCreated.getCode());
+        assertEquals(document.getExpiresAt(), documentCreated.getExpiresAt());
     }
 
     @Test
     @Order(2)
-    void renewingPassport() {
-        var passport = passportRepository.findById(1L)
+    void renewingDocument() {
+        var document = documentRepository.findById(1L)
                 .orElseThrow();
-        var expirationBeforeRenewal = passport.getExpiresAt();
-        passport.setExpiresAt(expirationBeforeRenewal.plus(Duration.ofDays(3 * 30)));
+        var expirationBeforeRenewal = document.getExpiresAt();
+        document.setExpiresAt(expirationBeforeRenewal.plus(Duration.ofDays(3 * 30)));
 
-        var passportRenewed = passportRepository.save(passport);
+        var documentRenewed = documentRepository.save(document);
 
-        assertEquals(passport.getId(), passportRenewed.getId());
-        assertEquals(passport.getCode(), passportRenewed.getCode());
-        assertNotEquals(passportRenewed.getExpiresAt(), expirationBeforeRenewal);
-        assertEquals(passport.getExpiresAt(), passportRenewed.getExpiresAt());
+        assertEquals(document.getId(), documentRenewed.getId());
+        assertEquals(document.getCode(), documentRenewed.getCode());
+        assertNotEquals(documentRenewed.getExpiresAt(), expirationBeforeRenewal);
+        assertEquals(document.getExpiresAt(), documentRenewed.getExpiresAt());
     }
 
     @Test
     @Order(3)
-    void deletingPassport() {
-        var passport = passportRepository.findById(1L)
+    void deletingDocument() {
+        var document = documentRepository.findById(1L)
                 .orElseThrow();
 
-        passportRepository.delete(passport);
+        documentRepository.delete(document);
 
-        assertEquals(1L, passport.getId());
-        assertFalse(passportRepository.existsById(passport.getId()));
+        assertEquals(1L, document.getId());
+        assertFalse(documentRepository.existsById(document.getId()));
     }
 }

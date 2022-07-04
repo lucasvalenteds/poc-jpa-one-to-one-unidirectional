@@ -48,7 +48,7 @@ class PersonRepositoryTest {
         assertEquals(1L, person.getId(), "Person instance gets flushed after save");
         assertEquals(1L, personCreated.getId());
         assertEquals(person.getName(), personCreated.getName());
-        assertNull(person.getPassport(), "Person does not posses a passport yet");
+        assertNull(person.getDocument(), "Person does not posses a document yet");
     }
 
     @Test
