@@ -17,7 +17,7 @@ Entity Relationship Model:
 
 ```mermaid
 classDiagram
-direction BT
+direction LR
 
 class Document {
     Long  id
@@ -30,4 +30,25 @@ class Person {
 }
 
 Person "0..1" --> "0..1" Document
+```
+
+Database schema:
+
+```mermaid
+classDiagram
+direction LR
+
+class document {
+   varchar document_code
+   timestamp with time zone document_expires_at
+   bigint document_id
+}
+
+class person {
+   varchar person_name
+   bigint document_id
+   bigint person_id
+}
+
+person  -->  document : document_id
 ```
