@@ -41,33 +41,28 @@ class PersonRepositoryTest {
     @Order(1)
     void creatingPerson() {
         var person = new Person();
-        person.setFirstName("John");
-        person.setLastName("Smith");
+        person.setName("John Smith");
 
         var personCreated = personRepository.save(person);
 
         assertEquals(1L, person.getId(), "Person instance gets flushed after save");
         assertEquals(1L, personCreated.getId());
-        assertEquals(person.getFirstName(), personCreated.getFirstName());
-        assertEquals(person.getLastName(), personCreated.getLastName());
+        assertEquals(person.getName(), personCreated.getName());
         assertNull(person.getPassport(), "Person does not posses a passport yet");
     }
 
     @Test
     @Order(2)
     void fixingPersonName() {
-        var person = personRepository.findById(1L)
-                .orElseThrow();
-        var lastNameBeforeRenaming = person.getLastName();
-        person.setLastName("Rogers");
+        final var person = personRepository.findById(1L).orElseThrow();
+        final var previousName = person.getName();
+        person.setName("Mary Jane");
 
-        var personRenamed = personRepository.save(person);
+        final var personRenamed = personRepository.save(person);
 
         assertEquals(person.getId(), personRenamed.getId());
-        assertEquals(person.getFirstName(), personRenamed.getFirstName());
-        assertEquals(person.getLastName(), personRenamed.getLastName());
-        assertNotEquals(lastNameBeforeRenaming, person.getLastName());
-        assertNotEquals(lastNameBeforeRenaming, personRenamed.getLastName());
+        assertEquals(person.getName(), personRenamed.getName());
+        assertNotEquals(previousName, person.getName());
     }
 
     @Test

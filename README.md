@@ -18,6 +18,7 @@ Entity Relationship Model:
 ```mermaid
 classDiagram
 direction BT
+
 class Passport {
     Long  id
     String  code
@@ -25,8 +26,7 @@ class Passport {
 }
 class Person {
     Long  id
-    String  firstName
-    String  lastName
+    String  name
 }
 
 Person "0..1" --> "0..1" Passport

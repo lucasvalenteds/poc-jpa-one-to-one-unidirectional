@@ -60,8 +60,7 @@ class ApplicationTest {
         passportRepository.save(passport);
 
         var person = new Person();
-        person.setFirstName("Mary");
-        person.setLastName("Jane");
+        person.setName("Mary Jane");
         person.setPassport(passport);
         personRepository.save(person);
 
@@ -157,15 +156,13 @@ class ApplicationTest {
         passportRepository.save(passport);
 
         final var person1 = new Person();
-        person1.setFirstName("John");
-        person1.setLastName("Smith");
+        person1.setName("John Smith");
         person1.setPassport(passport);
         personRepository.save(person1);
 
         // Trying to assign the same passport to Mary
         final var person2 = new Person();
-        person2.setFirstName("Mary");
-        person2.setLastName("Jane");
+        person2.setName("Mary Jane");
         person2.setPassport(passport);
 
         // Asserting the second assignment does not work
