@@ -146,4 +146,39 @@ class ApplicationTest {
         assertFalse(personRepository.existsById(personCreated.getId()));
         assertTrue(passportRepository.existsById(person.getPassport().getId()));
     }
+
+    @Test
+    @Order(6)
+    void twoPeopleCannotHaveTheSamePassport() {
+        // Creating the passport and assigning it to John
+        final var passport = new Passport();
+        passport.setCode("XYZ123456");
+        passport.setExpiresAt(Instant.now().plus(Duration.ofDays(365 * 10)));
+        passportRepository.save(passport);
+
+        final var person1 = new Person();
+        person1.setFirstName("John");
+        person1.setLastName("Smith");
+        person1.setPassport(passport);
+        personRepository.save(person1);
+
+        // Trying to assign the same passport to Mary
+        final var person2 = new Person();
+        person2.setFirstName("Mary");
+        person2.setLastName("Jane");
+        person2.setPassport(passport);
+
+        // Asserting the second assignment does not work
+        final var exception = assertThrows(
+                DataIntegrityViolationException.class,
+                () -> personRepository.save(person2)
+        );
+
+        assertThat(exception)
+                .getRootCause()
+                .hasMessageContainingAll(
+                        "ERROR: duplicate key value violates unique constraint \"person_passport_id_key\"",
+                        "Detail: Key (passport_id)=(3) already exists."
+                );
+    }
 }
